@@ -15,3 +15,4 @@ def test_google_search():
     driver.get("https://www.google.com")
     assert "Google" in driver.title
     driver.quit()
+test_google_search()
