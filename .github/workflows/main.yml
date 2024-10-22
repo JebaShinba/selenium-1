@@ -53,12 +53,7 @@ jobs:
         run: docker image save my-selenium-app:latest|xz -z -e -7 -T0 > selenium.xz
       - name: List Files
         run: ls -la  # List all files to verify if selenium.xz was created
-  release:
-    runs-on: ubuntu-latest
-    needs: test  # Wait for the test job to complete successfully
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+  
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
