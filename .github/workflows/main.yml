@@ -48,6 +48,9 @@ jobs:
         run: |
           tar -cvf selenium.tar test_results.log  # Create a tar file from the log
           xz selenium.tar  # Compress the tar file to .xz
+
+      - name: Save docker image
+        run: docker image save selenium:$(git rev-parse --short HEAD)|xz -z -e -7 -T0 > selenium.xz
       - name: List Files
         run: ls -la  # List all files to verify if selenium.xz was created
   release:
