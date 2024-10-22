@@ -50,7 +50,7 @@ jobs:
           xz selenium.tar  # Compress the tar file to .xz
 
       - name: Save docker image
-        run: docker image save selenium:$(git rev-parse --short HEAD)|xz -z -e -7 -T0 > selenium.xz
+        run: docker image save my-selenium-app:latest|xz -z -e -7 -T0 > selenium.xz
       - name: List Files
         run: ls -la  # List all files to verify if selenium.xz was created
   release:
