@@ -4,9 +4,6 @@ on:
   push:
     branches:
       - main
-  pull_request:
-    branches:
-      - main
   workflow_dispatch:
 
 permissions:
@@ -22,11 +19,6 @@ jobs:
         image: selenium/standalone-chrome:latest
         ports:
           - 4444:4444
-        options: >-
-          --health-cmd "wget --spider --timeout=5 http://localhost:4444/wd/hub/status || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
 
     steps:
       - name: Checkout code
@@ -40,55 +32,47 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Ensure requirements.txt is in the root
-
-      - name: Check Docker version
-        run: docker --version  # Check Docker version
-
-      - name: Build Docker image
-        run: |
-          docker build -t my-selenium-app:latest .  # Build the Docker image
+          pip install -r requirements.txt
 
       - name: Run Selenium tests
-        env:
-            SELENIUM_URL: http://localhost:4444/wd/hub
         run: |
-            pytest --maxfail=5 --disable-warnings > test_results.log  # Run the Selenium tests and log output
+          pytest --maxfail=5 --disable-warnings > test_results.log
 
       - name: Compress Test Results
         run: |
-          tar -cvf selenium.tar test_results.log  # Create a tar file from the log
-          xz selenium.tar  # Compress the tar file to .xz
+          tar -cvf selenium.tar test_results.log  # Create a tarball of the log file
+          xz selenium.tar  # Compress it to a .xz file
 
-      - name: List Files
-        run: ls -la  # List all files to verify if selenium.xz was created
+      - name: List files
+        run: ls -la  # Check to ensure the selenium.xz file was created
 
   release:
     runs-on: ubuntu-latest
-    needs: test  # Wait for the test job to complete successfully
+    needs: test  # This job waits for the 'test' job to complete
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
 
       - name: Create Release
-        id: create_release
+        id: create_release  # Give the step an ID to refer to it later
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ github.run_number }}  # Use the run number as the version tag
+          tag_name: v${{ github.run_number }}  # Version the release with the run number
           release_name: Release ${{ github.run_number }}
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically available in Actions
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
 
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: selenium.xz  # Specify the path to your asset
-          asset_name: selenium.xz
-          asset_content_type: application/x-xz
+          upload_url: ${{ steps.create_release.outputs.upload_url }}  # Use the release URL
+          asset_path: selenium.tar.xz  # Path to the file you want to upload
+          asset_name: selenium.tar.xz  # The name the file will have in the release
+          asset_content_type: application/x-xz  # Content type for the .xz file
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure the token is set
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure the GitHub token is set
+
 
