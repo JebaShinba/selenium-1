@@ -46,18 +46,7 @@ jobs:
           docker build -t my-selenium-app:latest .  # Build the Docker image
 
       
-      - name: Commit files if there are changes
-        run: |
-          git config --local user.email "jebashinba2001@gmail.com"
-          git config --local user.name "JebaShinba"
-          git add -A
-          git diff-index --quiet HEAD || (git commit -a -m "Updated logs" --allow-empty)
-
-      - name: Push changes to the main branch
-        uses: ad-m/github-push-action@v0.6.0
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: main
+      
 
   release:
     runs-on: ubuntu-latest
