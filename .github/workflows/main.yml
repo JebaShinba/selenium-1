@@ -60,6 +60,9 @@ jobs:
           tar -cvf selenium.tar test_results.log  # Create a tar file from the log
           xz selenium.tar  # Compress the tar file to .xz
 
+      - name: List Files
+        run: ls -la  # List all files to verify if selenium.xz was created
+
   release:
     runs-on: ubuntu-latest
     needs: test  # Wait for the test job to complete successfully
@@ -88,3 +91,4 @@ jobs:
           asset_content_type: application/x-xz
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure the token is set
+
