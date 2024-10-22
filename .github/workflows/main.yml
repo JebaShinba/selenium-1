@@ -16,13 +16,12 @@ jobs:
       selenium:
         image: selenium/standalone-chrome:latest
         ports:
-          - 4444:4444
+          - 5555:4444  # Map container's port 4444 to host's port 5555
         options: >-
-          --health-cmd "wget --spider --timeout=5 http://localhost:4444/wd/hub/status || exit 1"
+          --health-cmd "wget --spider --timeout=5 http://localhost:5555/wd/hub/status || exit 1"
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -36,17 +35,18 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt  # Ensure requirements.txt is in the root
-
+          
       - name: Build Docker image
         run: |
           docker build -t my-selenium-app:latest .
-
+          
       - name: Run Docker image
         run: |
-          docker run -d -p 4444:4444 my-selenium-app:latest
-
+          docker run -d -p 5555:4444 my-selenium-app:latest  # Mapping to port 5555
+          
       - name: Run Selenium tests
         env:
-          SELENIUM_URL: http://localhost:4444/wd/hub
+          SELENIUM_URL: http://localhost:5555/wd/hub  # Use port 5555
         run: |
           pytest --maxfail=5 --disable-warnings
+
