@@ -65,14 +65,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # GitHub token for authentication
 
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}  # Use the release URL
-          asset_path: ./site.zip  # Path to the file you want to upload
-          asset_name: site-v${{ github.run_number }}.zip # The name the file will have in the release
-          asset_content_type: application/zip # Content type for the .xz file
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure the GitHub token is set
+        # Ensure the GitHub token is set
 
 
