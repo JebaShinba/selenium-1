@@ -86,25 +86,32 @@ jobs:
 
       - name: Open Browser Window (Headless Mode)
         run: |
-          # Python script to open a browser window using Selenium in headless mode
           python -c "
-            from selenium import webdriver
+                from selenium import webdriver
 
-            def test_google_search():
-                options = webdriver.ChromeOptions()
-                options.add_argument('--headless')  # Run in headless mode
-                options.add_argument('--no-sandbox')
-                options.add_argument('--disable-dev-shm-usage')
-                
-                # Connect to the remote Selenium instance
-                driver = webdriver.Remote(
-                    command_executor='http://localhost:4444/wd/hub',
-                    options=options
-                )
-                
-                driver.get('https://www.google.com')
-                assert 'Google' in driver.title
-                driver.quit()
+                def test_google_search():
+                    options = webdriver.ChromeOptions()
+                    options.add_argument('--headless')  # Run in headless mode
+                    options.add_argument('--no-sandbox')
+                    options.add_argument('--disable-dev-shm-usage')
 
-            test_google_search()
-                      "
+                    # Connect to the remote Selenium instance
+                    driver = webdriver.Remote(
+                        command_executor='http://localhost:4444/wd/hub',
+                        options=options
+                    )
+                    
+                    driver.get('https://www.google.com')
+                    assert 'Google' in driver.title
+                    driver.quit()
+
+                test_google_search()
+                          "
+                        shell: /usr/bin/bash -e {0}
+        env:
+          pythonLocation: /opt/hostedtoolcache/Python/3.9.20/x64
+          PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.9.20/x64/lib/pkgconfig
+          Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.9.20/x64
+          Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.9.20/x64
+          Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.9.20/x64
+          LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.9.20/x64/lib
