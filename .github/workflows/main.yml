@@ -87,7 +87,6 @@ jobs:
 
       - name: Open Browser Window (Headless Mode)
         run: |
-          # Python script to open a browser window using Selenium in headless mode
           python -c "
           from selenium import webdriver
           from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
@@ -103,12 +102,13 @@ jobs:
               command_executor='http://localhost:4444/wd/hub',
               desired_capabilities=DesiredCapabilities.CHROME,
               options=options
-              )
+          )
 
-              # Open a webpage (e.g., Google)
-              driver.get('https://www.google.com')
-              print('Page title is:', driver.title)
+          # Open a webpage (e.g., Google)
+          driver.get('https://www.google.com')
+          print('Page title is:', driver.title)
 
-              # Close the browser
-              driver.quit()
-                    "
+          # Close the browser
+          driver.quit()
+          "
+
