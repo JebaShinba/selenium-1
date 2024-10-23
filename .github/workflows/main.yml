@@ -1,4 +1,4 @@
-name: Run Selenium Tests and Create Release1
+name: Run Selenium Tests and Create Release
 
 on:
   push:
@@ -75,20 +75,30 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Wait for Selenium to be ready
+        run: |
+          for i in {1..10}; do
+            if wget -q -O- http://localhost:4444/wd/hub/status | grep -q '"ready":true'; then
+              echo "Selenium is ready!"
+              break
+            else
+              echo "Waiting for Selenium to be ready..."
+              sleep 5
+            fi
+          done
+
       - name: Run Selenium tests
         env:
-          SELENIUM_URL: http://localhost:4444/wd/hub  # Selenium WebDriver URL
+          SELENIUM_URL: http://selenium:4444/wd/hub  # Correct Selenium WebDriver URL in the container
         run: |
           pytest --maxfail=5 --disable-warnings > test_results.log  # Automatically runs your Selenium tests and logs output
-      
+
       - name: Show test results log
         run: cat test_results.log  # Output the test results in the log for debugging purposes
 
       - name: Open Browser Window (Headless Mode)
         run: |
           python -c "
-          
-          
           from selenium import webdriver
           import os
 
@@ -105,7 +115,7 @@ jobs:
 
               # Connect to the remote Selenium instance
               driver = webdriver.Remote(
-                  command_executor='http://localhost:4444/wd/hub',
+                  command_executor='http://selenium:4444/wd/hub',  # Correct Selenium WebDriver URL
                   options=options
               )
               
