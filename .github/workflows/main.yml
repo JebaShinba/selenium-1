@@ -1,4 +1,4 @@
-name: Run Selenium Tests and Create Release
+name: Run Selenium Tests and Create Release1
 
 on:
   push:
