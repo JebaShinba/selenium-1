@@ -1,4 +1,4 @@
-name: Run Selenium Tests and Create Release
+name: Run Selenium Tests and Create Release1
 
 on:
   push:
@@ -19,6 +19,8 @@ jobs:
     services:
       selenium:
         image: selenium/standalone-chrome:latest  # Using Selenium Chrome standalone service
+        ports:
+          - 4444:4444  # Mapping Selenium port
 
     steps:
       - name: Checkout code
@@ -33,40 +35,40 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          - name: Check Docker version
-          run: docker --version
-  
+
+      - name: Check Docker version
+        run: docker --version
+
       - name: Build Docker image
         run: |
-            docker build -t my-selenium-app:latest .  # Build the Docker image
-  
+          docker build -t my-selenium-app:latest .  # Build the Docker image
+
       - name: Save Docker image
         run: docker image save my-selenium-app:latest | xz -z -e -7 -T0 > selenium.xz
-  
+
       - name: List Files
         run: ls -la  # Verify that selenium.xz was created
-  
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         with:
-            tag_name: v${{ github.run_number }}  # Use the run number as the version tag
-            release_name: Release ${{ github.run_number }}
-            draft: false
-            prerelease: false
+          tag_name: v${{ github.run_number }}  # Use the run number as the version tag
+          release_name: Release ${{ github.run_number }}
+          draft: false
+          prerelease: false
         env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically available in Actions
-  
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Automatically available in Actions
+
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
         with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: selenium.xz  # Path to the compressed Docker image
-            asset_name: selenium.xz
-            asset_content_type: application/x-xz
-      env:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: selenium.xz  # Path to the compressed Docker image
+          asset_name: selenium.xz
+          asset_content_type: application/x-xz
+        env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-  
 
       - name: Run Selenium tests
         run: |
@@ -74,4 +76,3 @@ jobs:
 
       - name: Show test results log
         run: cat test_results.log  # Display test results for debugging
-
