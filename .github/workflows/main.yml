@@ -48,17 +48,11 @@ jobs:
         run: |
           docker build -t my-selenium-app:latest .  # Build the Docker image
 
-      
-
-      
-
-      - name: Save docker image
+      - name: Save Docker image
         run: docker image save my-selenium-app:latest | xz -z -e -7 -T0 > selenium.xz
 
       - name: List Files
         run: ls -la  # Verify that selenium.xz was created
-
-  
 
       - name: Create Release
         id: create_release
@@ -83,14 +77,34 @@ jobs:
 
       - name: Run Selenium tests
         env:
-            SELENIUM_URL: http://localhost:4444/wd/hub  # Selenium WebDriver URL
+          SELENIUM_URL: http://localhost:4444/wd/hub  # Selenium WebDriver URL
         run: |
-            # Make sure the Selenium test script is in your repository and the test runner (pytest or similar) is set up
-            pytest --maxfail=5 --disable-warnings > test_results.log  # Automatically runs your Selenium tests and logs output
+          pytest --maxfail=5 --disable-warnings > test_results.log  # Automatically runs your Selenium tests and logs output
       
       - name: Show test results log
-        run: |
-            cat test_results.log  # Output the test results in the log for debugging purposes
-    
-          
+        run: cat test_results.log  # Output the test results in the log for debugging purposes
 
+      - name: Open Browser Window (Headless Mode)
+        run: |
+          # Python script to open a browser window using Selenium in headless mode
+          python -c "
+            from selenium import webdriver
+
+            def test_google_search():
+                options = webdriver.ChromeOptions()
+                options.add_argument('--headless')  # Run in headless mode
+                options.add_argument('--no-sandbox')
+                options.add_argument('--disable-dev-shm-usage')
+                
+                # Connect to the remote Selenium instance
+                driver = webdriver.Remote(
+                    command_executor='http://localhost:4444/wd/hub',
+                    options=options
+                )
+                
+                driver.get('https://www.google.com')
+                assert 'Google' in driver.title
+                driver.quit()
+
+            test_google_search()
+                      "
