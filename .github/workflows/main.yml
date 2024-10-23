@@ -88,8 +88,7 @@ jobs:
           done
 
       - name: Run Selenium tests
-        env:
-          SELENIUM_URL: http://selenium:4444/wd/hub  # Correct Selenium WebDriver URL in the container
+         # Correct Selenium WebDriver URL in the container
         run: |
           pytest --maxfail=5 --disable-warnings > test_results.log  # Automatically runs your Selenium tests and logs output
 
