@@ -53,8 +53,8 @@ jobs:
         id: create_release
         uses: actions/create-release@v1
         with:
-          tag_name: v${{ github.run_number }}  # Use the run number as the version tag
-          release_name: Release ${{ github.run_number }}
+          tag_name: v${{ github.run_id }}  # Use the run number as the version tag
+          release_name: Release ${{ github.run_id }}
           draft: false
           prerelease: false
         env:
