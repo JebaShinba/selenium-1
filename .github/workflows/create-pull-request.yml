@@ -53,12 +53,7 @@ jobs:
             - Branch: ${{ steps.create_branch.outputs.branch_name }}
           base: main  # The base branch to merge the changes into
           draft: false  # Create a non-draft pull request
-      - name: Automerge Action
-        uses: pascalgn/automerge-action@v0.15.4
-        with:
-            merge-method: 'squash'  # Choose your merge method: 'merge', 'squash', or 'rebase'
-        env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}  # Ensure the token is set correctly
+      
       - name: Auto assign issue
         uses: actions/github-script@v6
         with:
