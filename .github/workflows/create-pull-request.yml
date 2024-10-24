@@ -54,28 +54,4 @@ jobs:
           base: main  # The base branch to merge the changes into
           draft: false  # Create a non-draft pull request
       
-      - name: Auto assign issue
-        uses: actions/github-script@v6
-        with:
-         script: |
-            const assignees = ['JebaShinba']; // Replace with the actual GitHub username
-            const issue_number = context.issue.number;
-            const owner = context.repo.owner;
-            const repo = context.repo.repo;
-
-            // Check if the assignees array is not empty
-            if (assignees.length > 0) {
-              await github.issues.addAssignees({
-                owner,
-                repo,
-                issue_number,
-                assignees
-              });
-            } else {
-              console.log("No assignees to add.");
-            }
-      - name: Log context
-        run: echo "${{ toJson(github) }}"
-              
-
       
