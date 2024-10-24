@@ -3,7 +3,7 @@ name: Create Pull Request
 on:
   push:
     branches:
-      - feature/*  # Trigger the workflow on any push to feature branches
+      - main  # Trigger the workflow on any push to feature branches
   workflow_dispatch:  # Allows manually triggering the workflow
 
 permissions:
