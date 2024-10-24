@@ -1,47 +1,53 @@
-name: Create Pull Request
+name: Auto Create Branch and Pull Request
 
 on:
   push:
     branches:
-      - main  # Trigger the workflow on any push to feature branches
-  workflow_dispatch:  # Allows manually triggering the workflow
+      - main  # Trigger the workflow when changes are pushed to the main branch
+  workflow_dispatch:  # Allow manual trigger of the workflow
 
 permissions:
-  contents: write  # Required to create and modify pull requests
+  contents: write  # Required to create and modify branches and pull requests
 
 jobs:
-  create-pull-request:
+  create-branch-and-pr:
     runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Check out the code
+      # Step 1: Check out the repository
       - name: Checkout Code
         uses: actions/checkout@v3
 
-      # Step 2: Set up Git configuration
-      - name: Set up Git config
+      # Step 2: Set up Git config (for commit info)
+      - name: Set up Git
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-      # Step 3: Check if there are changes
-      - name: Check for Changes
-        id: changes
+      # Step 3: Create a new branch (named with the current date)
+      - name: Create New Branch
+        id: create_branch
         run: |
-          git fetch origin main
-          git diff --quiet origin/main || echo "Changes detected"
+          BRANCH_NAME="auto-branch-$(date +%Y%m%d-%H%M%S)"  # Example branch name: auto-branch-YYYYMMDD-HHMMSS
+          git checkout -b $BRANCH_NAME
+          echo "Created branch: $BRANCH_NAME"
+          echo "::set-output name=branch_name::$BRANCH_NAME"
 
-      # Step 4: Create Pull Request if there are changes
+      # Step 4: Push the new branch to GitHub
+      - name: Push New Branch
+        run: |
+          git push origin ${{ steps.create_branch.outputs.branch_name }}
+
+      # Step 5: Create a Pull Request from the new branch
       - name: Create Pull Request
-        if: steps.changes.outputs.changes != ''
         uses: peter-evans/create-pull-request@v5
         with:
           token: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided by GitHub Actions
-          commit-message: "Auto-generated PR for feature branch"
-          branch: feature-branch-${{ github.sha }}  # Name of the new branch for the PR
-          title: "Automated PR from Feature Branch"
+          commit-message: "Auto-generated branch and PR"
+          branch: ${{ steps.create_branch.outputs.branch_name }}  # The branch that was just created
+          title: "Auto-generated Pull Request from ${{ steps.create_branch.outputs.branch_name }}"
           body: |
-            This is an automated PR created by GitHub Actions.
-            - Feature Branch: ${{ github.ref }}
-            - Commit SHA: ${{ github.sha }}
-          base: main  # Base branch to merge the PR into
+            This pull request was automatically created by GitHub Actions.
+            - Branch: ${{ steps.create_branch.outputs.branch_name }}
+          base: main  # The base branch to merge the changes into
+          draft: false  # Create a non-draft pull request
