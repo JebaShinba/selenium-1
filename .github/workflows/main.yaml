@@ -9,7 +9,7 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    - cron: "30 14 * * 1-5"
+    - cron: "20 15 * * 1-5"
 
 permissions:
   contents: write
@@ -76,4 +76,5 @@ jobs:
 
       - name: Show test results log
         run: cat test_results.log  # Display test results for debugging
+      
       
