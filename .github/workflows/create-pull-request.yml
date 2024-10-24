@@ -8,6 +8,8 @@ on:
 
 permissions:
   contents: write  # Required to create and modify branches and pull requests
+ 
+  issues: write
 
 jobs:
   create-branch-and-pr:
@@ -51,3 +53,20 @@ jobs:
             - Branch: ${{ steps.create_branch.outputs.branch_name }}
           base: main  # The base branch to merge the changes into
           draft: false  # Create a non-draft pull request
+      - name: Merge pull request
+        uses: pascalgn/automerge-action@v0.15.4
+        with:
+            github-token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Auto assign issue
+        uses: actions/github-script@v6
+        with:
+              script: |
+                const assignees = ['JebaShinba']; // Replace with actual GitHub username
+                await github.issues.addAssignees({
+                  issue_number: context.issue.number,
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  assignees
+                });
+
+      
