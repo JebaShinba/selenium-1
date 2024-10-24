@@ -27,12 +27,12 @@ jobs:
       - name: Install specific Chrome version
         run: |
           sudo apt-get update
-          sudo apt-get install -y google-chrome-stable=115.0.5790.110-1  # Specify the desired Chrome version
+          sudo apt-get install -y google-chrome-stable=130.0.6723.59-1  # Install Chrome version 130.0.6723.59
 
       - name: Install ChromeDriver for specific version
         run: |
           sudo apt-get install -y unzip
-          curl -Lo /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/115.0.5790.110/chromedriver_linux64.zip
+          curl -Lo /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/130.0.6723.59/chromedriver_linux64.zip  # Download matching ChromeDriver version
           unzip /tmp/chromedriver.zip -d /usr/local/bin/
 
       - name: Run Selenium script
