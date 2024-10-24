@@ -1,0 +1,47 @@
+name: Create Pull Request
+
+on:
+  push:
+    branches:
+      - feature/*  # Trigger the workflow on any push to feature branches
+  workflow_dispatch:  # Allows manually triggering the workflow
+
+permissions:
+  contents: write  # Required to create and modify pull requests
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Check out the code
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Git configuration
+      - name: Set up Git config
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      # Step 3: Check if there are changes
+      - name: Check for Changes
+        id: changes
+        run: |
+          git fetch origin main
+          git diff --quiet origin/main || echo "Changes detected"
+
+      # Step 4: Create Pull Request if there are changes
+      - name: Create Pull Request
+        if: steps.changes.outputs.changes != ''
+        uses: peter-evans/create-pull-request@v5
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # Automatically provided by GitHub Actions
+          commit-message: "Auto-generated PR for feature branch"
+          branch: feature-branch-${{ github.sha }}  # Name of the new branch for the PR
+          title: "Automated PR from Feature Branch"
+          body: |
+            This is an automated PR created by GitHub Actions.
+            - Feature Branch: ${{ github.ref }}
+            - Commit SHA: ${{ github.sha }}
+          base: main  # Base branch to merge the PR into

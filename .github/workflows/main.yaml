@@ -9,7 +9,7 @@ on:
       - main
   workflow_dispatch:
   schedule:
-    - cron: "20 15 * * 1-5"
+    - cron: "30 14 * * 1-5"
 
 permissions:
   contents: write
