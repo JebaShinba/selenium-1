@@ -1,41 +1,32 @@
-name: Python Selenium Tests
+name: Run Selenium Pytest
 
-on: 
-  push:
-    branches:
-      - main  # Change this to your default branch if necessary
-  pull_request:
+on: [push]
 
 jobs:
   test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'  # Specify the Python version
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.9'
 
-      - name: Install dependencies
-        run: |
-          pip install pytest selenium pytest-html
+    - name: Install dependencies
+      run: |
+        pip install pytest pytest-html selenium
+        sudo apt-get update
+        sudo apt-get install -y chromium-browser
+        sudo apt-get install -y chromium-chromedriver
+        export PATH=$PATH:/usr/lib/chromium-browser/
 
-      - name: Set up ChromeDriver
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y chromium-browser
-          # No need to install chromedriver if already installed and matching the Chrome version
-          sudo apt-get install -y chromium-chromedriver
+    - name: Run tests
+      run: |
+        pytest --maxfail=5 --disable-warnings --html=report.html > test_results.log
+        cat test_results.log  # Print the log output
 
-      - name: Set environment variables
-        run: |
           echo "/usr/lib/chromium-browser/chromedriver" >> $GITHUB_PATH
           export DISPLAY=:99.0  # Use Xvfb to run Chrome in a virtual display
-
-      - name: Run tests
-        run: |
-          pytest --maxfail=5 --disable-warnings --html=report.html > test_results.log
-          cat test_results.log  # Optional: Print the log output
