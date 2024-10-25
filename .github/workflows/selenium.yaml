@@ -28,6 +28,5 @@ jobs:
       run: |
         # Run pytest and redirect output to log file
         pytest --maxfail=5 --disable-warnings --html=report.html > test_results.log || echo "Tests failed"
-        # Print the log output to help diagnose the issue
-        cat test_results.log
+        
 
