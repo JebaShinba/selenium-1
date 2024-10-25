@@ -72,7 +72,7 @@ jobs:
 
       - name: Run Selenium tests
         run: |
-          python test_google.py
+          pytest --maxfail=5 --disable-warnings > test_results.log  # Automatically runs your Selenium tests and logs output
 
       - name: Show test results log
         run: cat test_results.log  # Display test results for debugging
