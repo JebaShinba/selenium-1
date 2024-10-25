@@ -72,8 +72,8 @@ jobs:
 
       - name: Run Selenium tests
         run: |
-          pip install pytest-html
           pytest --maxfail=5 --disable-warnings --html=report.html > test_results.log
+
 
       - name: Show test results log
         run: cat test_results.log  # Display test results for debugging
