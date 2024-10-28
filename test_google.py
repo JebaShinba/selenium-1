@@ -13,7 +13,7 @@ def setup_driver():
 
 def test_google_search(setup_driver):
     driver = setup_driver
-    query = "Selenium WebDriver"
+    query = "Geeks for Geeks"
 
     # Open Google
     driver.get("https://www.google.com")
