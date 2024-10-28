@@ -10,8 +10,8 @@ chrome_options.add_argument("--disable-dev-shm-usage")
 chrome_options.add_argument("--disable-gpu")
 
 # Initialize the Chrome WebDriver with these options
-service = Service(ChromeDriverManager().install())
-driver = webdriver.Chrome(service=service, options=chrome_options)
+
+driver = webdriver.Chrome()
 
 driver.get("https://www.google.com")
 print(driver.title)
