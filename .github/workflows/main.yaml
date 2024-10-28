@@ -80,3 +80,17 @@ jobs:
         with:
             name: selenium-test-report
             path: report.html
+      - name: Archive Test Results
+        uses: actions/upload-artifact@v3
+        with:
+              name: test-results
+              path: test_results.log
+
+      - name: Check if tests passed
+        run: |
+                if [ $? -eq 0 ]; then
+                  echo "All tests passed."
+                else
+                  echo "Some tests failed."
+                  exit 1  # Ensure the workflow fails if any test fails
+                fi
