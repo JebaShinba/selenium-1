@@ -6,8 +6,9 @@ import time
 
 @pytest.fixture(scope="module")
 def setup_driver():
-    # Initialize ChromeDriver
-    driver = webdriver.Chrome()
+    # Initialize ChromeDriver (ensure ChromeDriver is available in your PATH)
+    driver = webdriver.Chrome()  # If chromedriver is in your PATH
+    # driver = webdriver.Chrome(executable_path='/path/to/chromedriver') # Specify path if not in PATH
     yield driver  # Yield the driver to the test function
     driver.quit()  # Close the driver after tests are done
 
@@ -33,7 +34,4 @@ def test_google_search(setup_driver):
 
     # Verify the search results page contains the search term
     assert query in driver.page_source
-
-
-
 
