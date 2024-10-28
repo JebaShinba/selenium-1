@@ -39,8 +39,8 @@ jobs:
         run: |
           # Wait for Selenium service to be ready
           sleep 10  # Adjust if necessary
-          pytest --maxfail=5 --disable-warnings --html=report.html > test_results.log || exit 0
-          cat test_results.log  # Display test results for debugging
+          python test_google.py > test_results.log || exit 0
+          cat test_results.log    # Display test results for debugging
 
       - name: Archive Test Report
         uses: actions/upload-artifact@v3
