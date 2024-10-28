@@ -1,4 +1,4 @@
-name: Run Selenium Tests
+name: Run Selenium Tests2
 
 on: [push, pull_request]
 
