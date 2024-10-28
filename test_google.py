@@ -1,23 +1,20 @@
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.chrome.options import Options
 from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
 
-# Set up Chrome options
 chrome_options = Options()
-# Optional: Add any arguments you want (e.g., run in headless mode)
-# chrome_options.add_argument("--headless")
+chrome_options.add_argument("--headless")
+chrome_options.add_argument("--no-sandbox")
+chrome_options.add_argument("--disable-dev-shm-usage")
+chrome_options.add_argument("--disable-gpu")
 
-# Set up the Chrome driver and ensure it installs the correct version
+# Initialize the Chrome WebDriver with these options
+service = Service(ChromeDriverManager().install())
+driver = webdriver.Chrome(service=service, options=chrome_options)
 
-driver = webdriver.Chrome()
-
-# Open Google
 driver.get("https://www.google.com")
-
-# Optional: Wait for a few seconds to see the page
-driver.implicitly_wait(5)
-
-# Close the driver
+print(driver.title)
 driver.quit()
+
 
