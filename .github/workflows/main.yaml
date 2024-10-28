@@ -94,3 +94,7 @@ jobs:
                   echo "Some tests failed."
                   exit 1  # Ensure the workflow fails if any test fails
                 fi
+
+      - name: Show test results log
+        run: cat test_results.log
+              
