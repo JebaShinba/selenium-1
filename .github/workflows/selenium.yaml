@@ -35,12 +35,9 @@ jobs:
         run: |
           python test_google.py > test_results.log || exit 0
           cat test_results.log
+      
 
-      - name: Run Tests
-        run: |
-          # Simulate a test that fails
-          exit 1  # Change this with your actual test command
-
+    
       - name: Take a screenshot of failure
         if: failure()  # Only run if the previous step fails
         run: |
