@@ -66,6 +66,7 @@ jobs:
             echo "Screenshot path: screenshots/$LATEST_SCREENSHOT" >> screenshot_paths.log || echo "No screenshots taken." > screenshot_paths.log
             cat screenshot_paths.log >> test_results.log  # Append to test results log for reference
             echo "Screenshot taken and path logged."
+            cat screenshot_paths.log >> test_results.log
 
       - name: Zip Screenshots
         if: failure()  # Only zip if there was a failure
