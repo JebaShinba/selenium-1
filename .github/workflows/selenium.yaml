@@ -59,11 +59,11 @@ jobs:
         run: |
             mkdir -p screenshots
             echo "Taking a screenshot..."
-            python take_screenshot.py  # Ensure this saves screenshots in the `screenshots/` directory
+            python test_google.py  # Ensure this saves screenshots in the `screenshots/` directory
             
             # Capture the latest screenshot path and save it to logs
             LATEST_SCREENSHOT=$(ls -Art screenshots | tail -n 1)
-            echo "Screenshot path: screenshots/$LATEST_SCREENSHOT" >> screenshot_paths.log
+            echo "Screenshot path: screenshots/$LATEST_SCREENSHOT" >> screenshot_paths.log || echo "No screenshots taken." > screenshot_paths.log
             cat screenshot_paths.log >> test_results.log  # Append to test results log for reference
             echo "Screenshot taken and path logged."
 
@@ -71,7 +71,7 @@ jobs:
         if: failure()  # Only zip if there was a failure
         run: |
           zip -r screenshots.zip screenshots/  # Zip the screenshots directory
-          echo "Screenshots zipped into screenshots.zip"
+          
 
       - name: Upload Screenshots and Logs
         id: upload_screenshots
@@ -93,10 +93,17 @@ jobs:
             cat test_results.log >> final_report.txt
             echo "" >> final_report.txt
             echo "Screenshot paths:" >> final_report.txt
-            cat screenshot_paths.log >> final_report.txt
+
+            # Check if screenshot_paths.log exists
+            if [ -f screenshot_paths.log ]; then
+              cat screenshot_paths.log >> final_report.txt
+            else
+              echo "No screenshots taken." >> final_report.txt
+            fi
+            
             echo "Final report generated."
           else
-            echo "No test results found."
+            echo "No test results found." > final_report.txt
           fi
 
       - name: Upload Final Report
@@ -116,3 +123,5 @@ jobs:
         if: success()
         run: |
             echo "All tests passed successfully! No errors encountered."
+
+         
