@@ -35,6 +35,22 @@ jobs:
         run: |
           python test_google.py > test_results.log || exit 0
           cat test_results.log
+      
+
+      - name: Take a screenshot of failure
+        if: failure()  # Only run if the previous step fails
+        run: |
+          mkdir -p screenshots
+          # Assuming you have a method to take screenshots in your script
+          python take_screenshot.py
+
+      - name: Upload screenshots
+        if: failure()  # Only upload if the previous step fails
+        uses: actions/upload-artifact@v2
+        with:
+          name: screenshots
+          path: screenshots/
+
 
         
 
