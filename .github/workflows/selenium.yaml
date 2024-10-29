@@ -62,8 +62,4 @@ jobs:
             echo "A failure occurred. Check the screenshots here: ${{ steps.upload_screenshots.outputs.artifact_url }}"
             # Integrate with a notification service as needed
   
-      - name: Cleanup screenshots
-        if: always()  # Run this step regardless of previous step results
-        run: |
-            echo "Cleaning up screenshots..."
-            rm -rf screenshots
+     
