@@ -71,9 +71,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       
-      - name: Show test results log
-        run: cat test_results.log  # Display test results for debugging
-      
+     
       
 
 
@@ -83,6 +81,8 @@ jobs:
           sleep 10  # Adjust if necessary
           python test_google.py > test_results.log || exit 0
           cat test_results.log    # Display test results for debugging
+      - name: Show test results log
+        run: cat test_results.log  
 
       - name: Archive Test Report
         uses: actions/upload-artifact@v3
