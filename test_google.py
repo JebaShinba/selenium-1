@@ -13,7 +13,7 @@ chrome_options.add_argument("--window-size=1280x1024")  # Set a specific window 
 
 # Initialize the Chrome WebDriver with these options
 
-driver = webdriver.Chrome()
+driver = webdriver.Chrome(options=chrome_options)
 
 # Navigate to Google
 driver.get("https://www.google.com")
