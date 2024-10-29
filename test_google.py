@@ -46,7 +46,7 @@ def close_browser():
     driver.quit()
     print("Browser closed.")
 
-# Example usage:
+# Example 
 if __name__ == "__main__":
     open_page("https://www.google.com")
     search_in_google("Selenium WebDriver")
