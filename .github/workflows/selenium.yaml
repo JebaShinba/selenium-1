@@ -58,21 +58,9 @@ jobs:
         if: failure()  # Only run if the previous step fails
         run: |
             mkdir -p screenshots
-            echo "Taking a screenshot..."
-            python take_screenshot.py  # Ensure this saves screenshots in the `screenshots/` directory
-            
-            # Capture the latest screenshot path and save it to logs
-            LATEST_SCREENSHOT=$(ls -Art screenshots | tail -n 1)
-            echo "Screenshot path: screenshots/$LATEST_SCREENSHOT" >> screenshot_paths.log
-            cat screenshot_paths.log >> test_results.log  # Append to test results log for reference
-            echo "Screenshot taken and path logged."
-
-      - name: Zip Screenshots
-        if: failure()  # Only zip if there was a failure
-        run: |
-          zip -r screenshots.zip screenshots/  # Zip the screenshots directory
-          echo "Screenshots zipped into screenshots.zip"
-
+            python test_google.py  # Ensure this saves screenshots in `screenshots/` directory
+            echo "Screenshot taken and saved in screenshots/"
+  
       - name: Upload Screenshots and Logs
         id: upload_screenshots
         if: failure()  # Only upload if the previous step fails
@@ -84,35 +72,8 @@ jobs:
               test_results.log
               screenshot_paths.log
             retention-days: 7  # Keep for 7 days
-
-      - name: Generate Final Report
-        run: |
-          echo "Generating final report..."
-          if [ -f test_results.log ]; then
-            echo "Test Results:" > final_report.txt
-            cat test_results.log >> final_report.txt
-            echo "" >> final_report.txt
-            echo "Screenshot paths:" >> final_report.txt
-            cat screenshot_paths.log >> final_report.txt
-            echo "Final report generated."
-          else
-            echo "No test results found."
-          fi
-
-      - name: Upload Final Report
-        if: always()  # Always upload the report, regardless of test success
-        uses: actions/upload-artifact@v3
-        with:
-          name: final_report
-          path: final_report.txt
-          retention-days: 7
-
+  
       - name: Notify on Failure
         if: failure()
         run: |
             echo "A failure occurred. Check the screenshots and logs here: ${{ steps.upload_screenshots.outputs.artifact_url }}"
-
-      - name: Notify on Success
-        if: success()
-        run: |
-            echo "All tests passed successfully! No errors encountered."
